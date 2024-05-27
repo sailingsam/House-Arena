@@ -1,11 +1,11 @@
 {
-    "name": "web_app_house_arena_basic",
-    "short_name": "web_app_house_arena_basic",
+    "name": "House Arena",
+    "short_name": "house arena",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "SST house arena app",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
