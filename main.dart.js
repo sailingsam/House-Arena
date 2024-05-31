@@ -91115,9 +91115,9 @@ return A.K($async$$0,r)},
 $S:19}
 A.auj.prototype={
 $1(a){var s
-if(a.length===0)return"Please enter a date"
-s=A.c9("^\\d{2}-\\d{2}-\\d{4}$",!0,!1)
-if(!s.b.test(a))return"Please enter a valid date (DD-MM-YYYY)"
+if(a.length!==0){s=A.c9("^\\d{2}-\\d{2}-\\d{4}$",!0,!1)
+s=!s.b.test(a)}else s=!1
+if(s)return"Please enter a valid date (DD-MM-YYYY)"
 return null},
 $S:28}
 A.auk.prototype={
@@ -91144,12 +91144,13 @@ A.auo.prototype={
 $0(){A.dU(this.a,!1).e1()},
 $S:0}
 A.aup.prototype={
-$0(){var s=0,r=A.L(t.H),q=1,p,o=this,n,m,l,k,j,i,h,g,f
+$0(){var s=0,r=A.L(t.H),q=1,p,o=this,n,m,l,k,j,i,h,g,f,e
 var $async$$0=A.G(function(a,b){if(a===1){p=b
 s=q}while(true)switch(s){case 0:s=o.a.gK().r5()?2:3
 break
 case 2:n=o.b.a.a
-m=o.c.a.a
+g=o.c.a.a
+m=g.length===0?null:g
 l=A.ex(o.d.a.a,null)
 k=A.ex(o.e.a.a,null)
 j=A.ex(o.f.a.a,null)
@@ -91163,8 +91164,8 @@ q=1
 s=7
 break
 case 5:q=4
-f=p
-h=A.a8(f)
+e=p
+h=A.a8(e)
 A.cW("Error adding event: "+A.i(h))
 s=7
 break
@@ -91312,7 +91313,7 @@ var $async$BA=A.G(function(h,i){if(h===1){p=i
 s=q}while(true)switch(s){case 0:q=3
 m=t.z
 s=6
-return A.T(o.a.Bz("event-details",A.aq(["event_name",b,"date",c,"kong_point",e,"leo_point",d,"pheonix_point",f,"tusker_point",g],m,m),"house-arena-database",a),$async$BA)
+return A.T(o.a.Bz("event-details",A.aq(["event_name",b,"date",c,"kong_point",d,"leo_point",e,"pheonix_point",f,"tusker_point",g],m,m),"house-arena-database",a),$async$BA)
 case 6:q=1
 s=5
 break
