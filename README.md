@@ -1,3 +1,6 @@
+```
+Made with ❤️ by Saksham Jain
+```
 # House Arena
 
 Hi! I am [Saksham Jain](https://sailingsam.vercel.app), I made this project as part of my buildspace N&Ws5 program.
@@ -106,7 +109,7 @@ Create a `.env` file in the frontend folder, copy the keys from `..env` file.
    cd frontend
    npm run dev
    ```
-   Access the application at http://localhost:3000
+   Access the application at http://localhost:5173
 
 ## Contributing
 
