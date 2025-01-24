@@ -53,7 +53,7 @@ Ensure you have the following installed on your local machine:
 4. Setup MongoDB Database:
    - Create a free account on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
    - Create a new project and cluster
-   - Create `.env` file in the backend folder
+   - Create `.env` file in the backend folder, copy the keys from `..env` file.
    - Add MONGO_URI with your connection string (replace `<db_password>` with your password)
 
 ### Setting Up Admin Access & Sample Data
@@ -86,6 +86,9 @@ Before running the application, you'll need to set up admin access and seed the 
    ```
 
 **Note**: Only emails listed in the admin emails collection can register accounts.
+
+#### Setting up ENV variables
+Create a `.env` file in the frontend folder, copy the keys from `..env` file.
 
 ### Running the Application
 
