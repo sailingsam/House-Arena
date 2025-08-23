@@ -1,11 +1,11 @@
 import axios from "axios";
 
-export const ResetPassword = async ({ email, password }) => {
+export const ResetPassword = async ({ email, password, verifiedEmail, verificationToken }) => {
   try {
     const baseUrl = import.meta.env.VITE_BASE_URL_BACKEND;
     const res = await axios.post(
       `${baseUrl}/api/users/reset_password/`,
-      { email, password },
+      { email, password, verifiedEmail, verificationToken },
       {
         headers: {
           "Content-Type": "application/json",

@@ -49,12 +49,33 @@ export default () => {
   const [isStudent, setIsStudent] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [verifiedEmail, setVerifiedEmail] = useState(null);
+  const [verificationToken, setVerificationToken] = useState(null);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
+    
+    // SECURITY CHECK: Ensure the email being registered is the same as verified email
+    if (!otpVerified) {
+      message.error("Please verify your email with OTP first");
+      return;
+    }
+    
+    if (values.email !== verifiedEmail) {
+      message.error("Email mismatch! You can only register with the verified email.");
+      return;
+    }
+    
     try {
-      const res = await RegisterUser(values);
+      // Include verified email and verification token in the request for backend validation
+      const registrationData = {
+        ...values,
+        verifiedEmail: verifiedEmail,
+        verificationToken: verificationToken
+      };
+      
+      const res = await RegisterUser(registrationData);
       if (res.success) {
         message.success("yoo! -> " + res.message);
         navigate("/login");
@@ -100,6 +121,10 @@ export default () => {
       if (data.success) {
         message.success("OTP verified successfully");
         setOtpVerified(true);
+        setVerifiedEmail(email); // Store the verified email
+        if (data.verificationToken) {
+          setVerificationToken(data.verificationToken); // Store verification token
+        }
         
       } else {
         message.error("Invalid OTP");
@@ -187,6 +212,8 @@ export default () => {
         <Input
           placeholder="@sst.scaler.com / @scaler.com"
           onChange={handleEmailChange}
+          disabled={otpVerified}
+          style={otpVerified ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
         />
       </Form.Item>
 

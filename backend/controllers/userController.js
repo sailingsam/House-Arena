@@ -64,11 +64,27 @@ export async function verify_otp(req, res) {
     const otpRecord = await OTP.findOne({ email, otp });
 
     if (otpRecord) {
-      // OTP matches
+      // OTP matches - generate a verification token
+      const verificationToken = randomBytes(32).toString("hex");
+      
+      // Store verification token with email for later validation during registration
+      await OTP.create({ 
+        email, 
+        otp: verificationToken, 
+        isVerificationToken: true 
+      });
+      
+      // Delete the original OTP
       await OTP.deleteOne({ email, otp });
+      
       res
         .status(200)
-        .send({ success: true, message: "OTP verified successfully" });
+        // .send({ success: true, message: "OTP verified successfully" })
+        .send({ 
+          success: true, 
+          message: "OTP verified successfully",
+          verificationToken: verificationToken
+        });
     } else {
       // OTP does not match
       res.status(400).send({ success: false, message: "Invalid OTP" });
@@ -80,11 +96,49 @@ export async function verify_otp(req, res) {
 
 export async function reset_password(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, verifiedEmail, verificationToken } = req.body;
     if (!email || !password) {
       return res.status(400).send({
         success: false,
         message: "Email and password are required",
+      });
+    }
+
+    // SECURITY CHECK: Verify that email matches verifiedEmail
+    if (!verifiedEmail) {
+      return res.status(400).send({
+        success: false,
+        message: "Email verification required. Please verify your email with OTP first.",
+      });
+    }
+
+    if (email !== verifiedEmail) {
+      return res.status(400).send({
+        success: false,
+        message: "Security violation: Email mismatch detected. Password reset blocked.",
+      });
+    }
+
+    // ADDITIONAL SECURITY: Validate verification token if provided
+    if (verificationToken) {
+      const tokenRecord = await OTP.findOne({ 
+        email: email, 
+        otp: verificationToken,
+        isVerificationToken: true 
+      });
+      
+      if (!tokenRecord) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid or expired verification token. Please verify your email again.",
+        });
+      }
+      
+      // Delete the verification token after successful validation
+      await OTP.deleteOne({ 
+        email: email, 
+        otp: verificationToken,
+        isVerificationToken: true 
       });
     }
     const salt = await genSalt(10);
@@ -122,6 +176,44 @@ export async function reset_password(req, res) {
 export async function registerUser(req, res) {
   try {
     // console.log("Request body:", req.body); // Log the request body
+
+    // SECURITY CHECK: Verify that email matches verifiedEmail
+    if (!req.body.verifiedEmail) {
+      return res.status(400).send({
+        success: false,
+        message: "Email verification required. Please verify your email with OTP first.",
+      });
+    }
+
+    if (req.body.email !== req.body.verifiedEmail) {
+      return res.status(400).send({
+        success: false,
+        message: "Security violation: Email mismatch detected. Registration blocked.",
+      });
+    }
+
+    // ADDITIONAL SECURITY: Validate verification token if provided
+    if (req.body.verificationToken) {
+      const tokenRecord = await OTP.findOne({ 
+        email: req.body.email, 
+        otp: req.body.verificationToken,
+        isVerificationToken: true 
+      });
+      
+      if (!tokenRecord) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid or expired verification token. Please verify your email again.",
+        });
+      }
+      
+      // Delete the verification token after successful validation
+      await OTP.deleteOne({ 
+        email: req.body.email, 
+        otp: req.body.verificationToken,
+        isVerificationToken: true 
+      });
+    }
 
     const isAdminEmail = await AdminEmail.findOne({ email: req.body.email });
     if (!isAdminEmail) {

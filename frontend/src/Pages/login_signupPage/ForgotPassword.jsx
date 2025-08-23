@@ -53,6 +53,8 @@ const ForgotPassword = () => {
   const [isStudent, setIsStudent] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [verifiedEmail, setVerifiedEmail] = useState(null);
+  const [verificationToken, setVerificationToken] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async () => {
@@ -76,6 +78,10 @@ const ForgotPassword = () => {
     if (response.success) {
       message.success("OTP verified successfully");
       setOtpVerified(true);
+      setVerifiedEmail(email); // Store the verified email
+      if (response.verificationToken) {
+        setVerificationToken(response.verificationToken); // Store verification token
+      }
     } else {
       message.error("Invalid OTP");
     }
@@ -93,10 +99,31 @@ const ForgotPassword = () => {
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
+    
+    // SECURITY CHECK: Ensure the email being used for password reset is the same as verified email
+    if (!otpVerified) {
+      message.error("Please verify your email with OTP first");
+      return;
+    }
+    
+    if (values.email !== verifiedEmail) {
+      message.error("Email mismatch! You can only reset password for the verified email.");
+      return;
+    }
+    
     const { email, password } = values;
     console.log("Updating password for:", email);
     setLoading(true);
-    const response = await ResetPassword({ email, password });
+    
+    // Include verified email and verification token for backend validation
+    const resetData = {
+      email,
+      password,
+      verifiedEmail: verifiedEmail,
+      verificationToken: verificationToken
+    };
+    
+    const response = await ResetPassword(resetData);
     setLoading(false);
     console.log("Update password response:", response);
     if (response.success) {
@@ -215,6 +242,8 @@ const ForgotPassword = () => {
               <Input
                 placeholder="@sst.scaler.com / @scaler.com"
                 onChange={handleEmailChange}
+                disabled={otpVerified}
+                style={otpVerified ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
               />
             </Form.Item>
             <Form.Item
