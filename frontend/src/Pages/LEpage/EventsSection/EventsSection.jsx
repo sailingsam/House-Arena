@@ -202,7 +202,13 @@ const EventsSection = () => {
             </tr>
           </thead>
           <tbody className="text-white font-semibold divide-y">
-            {loading ? (
+            {/* in maintenance mode */}
+            <tr>
+              <td colSpan="6" className="text-center py-4">
+                <span className="text-white">App is under maintenance. Please check back later.</span>
+              </td>
+            </tr>
+            {/* {loading ? (
               <tr>
                 <td colSpan="6" className="text-center py-4">
                   <Loader LoaderData={"Loading Events wise Points..."} />
@@ -264,7 +270,7 @@ const EventsSection = () => {
                   )}
                 </tr>
               ))
-            )}
+            )} */}
           </tbody>
         </table>
       </div>
