@@ -15,7 +15,7 @@ function Layout() {
       }}
     >
       {/* banner */}
-      <div className="w-full h-10 bg-red-700 text-center flex items-center justify-center z-50">
+      <div className="w-full py-1 bg-red-700 text-center flex items-center justify-center z-50">
         <span className="text-white font-bold">🚧 This is Legacy Project -<span className="underline font-bold">NO LONGER MAINTAINED</span>. Interested in reviving/contributing? Reach out - <a href="https://sailingsam.me" className="text-blue-500 font-bold" target="_blank" rel="noopener noreferrer">@SailingSam(Saksham)</a></span>
       </div>
       <Navheader />
